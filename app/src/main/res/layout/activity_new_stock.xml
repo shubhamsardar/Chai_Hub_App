@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    tools:context=".activities.NewStockActivity">
+
+    <ScrollView
+        android:id="@+id/mainscroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/proceedtopay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/items_selected_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="@color/colorHighlight"
+                    android:visibility="gone" />
+
+
+                <LinearLayout
+                    android:id="@+id/itrms_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_light_selector"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/items_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="16dp"
+                        android:drawableLeft="@drawable/ic_arrow_drop_up_black_24dp"
+                        android:drawableStart="@drawable/ic_arrow_drop_up_black_24dp"
+                        android:fontFamily="@font/rajdhani_bold"
+                        android:gravity="center_vertical"
+                        android:text="Items Selected"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/background_dark"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/items_lists"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+
+                    <TextView
+                        android:id="@+id/tv_noitems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/rajdhani_bold"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="No Items Available!"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/chaihiyehll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/chahiyeproductstitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/source_sans_pro_semibold"
+                            android:text="CHAI-HI-YEH PRODUCTS"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginTop="3dp"
+                            android:alpha="0.5"
+                            android:background="@android:color/background_dark" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/chaihiyeh"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:nestedScrollingEnabled="false" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/beveragesll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/beveragestitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/source_sans_pro_semibold"
+                            android:text="Beverages"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginTop="3dp"
+                            android:alpha="0.5"
+                            android:background="@android:color/background_dark" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/beverages"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:nestedScrollingEnabled="false" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/snacksll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:id="@+id/snackstitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/source_sans_pro_semibold"
+                            android:text="Snacks"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginTop="3dp"
+                            android:alpha="0.5"
+                            android:background="@android:color/background_dark" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/snacks"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:nestedScrollingEnabled="false" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/extrasll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/extrastitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="@font/source_sans_pro_semibold"
+                            android:text="Extras"
+                            android:textAllCaps="true"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginTop="3dp"
+                            android:alpha="0.5"
+                            android:background="@android:color/background_dark" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/extras"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:nestedScrollingEnabled="false" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/delivery_address_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:textColor="@android:color/background_dark"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/address_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/button_light_selector"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/address_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="16dp"
+                        android:drawableLeft="@drawable/ic_location_on_black_24dp"
+                        android:fontFamily="@font/rajdhani_bold"
+                        android:gravity="center_vertical"
+                        android:text="Pickup Location"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/background_dark"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/address_include"
+                    layout="@layout/address_item_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/proceedtopay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_main_selector"
+        android:elevation="2dp"
+        android:fontFamily="@font/rajdhani_bold"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Proceed To Order Summery"
+        android:textAllCaps="true"
+        android:textColor="@color/colorGreyLight"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</android.support.constraint.ConstraintLayout>

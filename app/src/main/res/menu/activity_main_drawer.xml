@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <item android:title="Orders">
+        <menu>
+            <item
+                android:id="@+id/nav_pending"
+                android:icon="@drawable/ic_playlist_play_black_24dp"
+                android:title="Pending Orders" />
+            <item
+                android:id="@+id/nav_history"
+                android:icon="@drawable/ic_history_black_24dp"
+                android:title="Order History" />
+        </menu>
+    </item>
+
+    <item android:title="Stock">
+        <menu>
+            <item
+                android:id="@+id/nav_stocknew"
+                android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+                android:title="New Stock" />
+            <item
+                android:id="@+id/nav_stockhistory"
+                android:icon="@drawable/ic_history_black_24dp"
+                android:title="Stock History" />
+        </menu>
+    </item>
+
+    <item android:title="My Account">
+        <menu>
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_edit_black_24dp"
+                android:title="Manage Items" />
+            <item
+                android:id="@+id/nav_changepin"
+                android:icon="@drawable/ic_security_black_24dp"
+                android:title="Change Pin" />
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/ic_rate_review_black_24dp"
+                android:title="Rate Us On Playstore" />
+
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
+                android:title="Log Out" />
+            <item
+                android:id="@+id/nav_support"
+                android:icon="@drawable/ic_call_black_24dp"
+                android:title="Call Support" />
+        </menu>
+    </item>
+
+
+
+</menu>

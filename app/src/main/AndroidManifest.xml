@@ -1,0 +1,70 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="in.co.tripin.chai_hub_app">
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+
+
+    <activity
+        android:name=".activities.SpalshActivity"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
+    <meta-data
+        android:name="preloaded_fonts"
+        android:resource="@array/preloaded_fonts" />
+
+    <activity
+        android:name=".activities.LoginActivity"
+        android:parentActivityName=".activities.SpalshActivity" />
+    <activity
+        android:name=".activities.ForgotPinActivity"
+        android:parentActivityName=".activities.LoginActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".activities.ResetPinActivity" />
+    <activity
+        android:name=".activities.MainActivity"
+        android:label="@string/title_activity_main"
+        android:theme="@style/AppTheme.NoActionBar" />
+    <activity
+        android:name=".activities.OrderHistoryActivity"
+        android:parentActivityName=".activities.MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".activities.NewStockActivity"
+        android:parentActivityName=".activities.MainActivity"/>
+    <activity android:name=".activities.OrderSummeryActivity"/>
+    <activity android:name=".activities.StockHistoryActivity"
+        android:parentActivityName=".activities.MainActivity"/>
+    <activity android:name=".activities.ManageItemsActivity"
+        android:parentActivityName=".activities.MainActivity"/>
+    <activity android:name=".activities.ManageItemsListActivity"
+        android:parentActivityName=".activities.ManageItemsActivity"/>
+    <activity android:name=".activities.ChangePinActivity"
+        android:parentActivityName=".activities.MainActivity"/>
+
+    </application>
+
+</manifest>
