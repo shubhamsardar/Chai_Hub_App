@@ -44,7 +44,7 @@ class PendingAdapter(val data: List<PendingOrdersResponce.Datum>,
         holder.b1.setOnClickListener{
 
             if(status == "accepted"){
-                pendingOrdersInteractionCallback.onCalledCustomer(data[position].UserId().mobile)
+                pendingOrdersInteractionCallback.onCalledCustomer(data[position].userId.mobile)
             }else if(status == "ordered"){
                 pendingOrdersInteractionCallback.onOrderRejected(data[position].id)
             }

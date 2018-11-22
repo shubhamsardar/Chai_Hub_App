@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import in.co.tripin.chai_hub_app.Helper.Constants;
 import in.co.tripin.chai_hub_app.Managers.Logger;
 import in.co.tripin.chai_hub_app.Managers.PreferenceManager;
 import in.co.tripin.chai_hub_app.POJOs.Models.OrderSummeryPOJO;
@@ -155,7 +156,7 @@ public class OrderSummeryActivity extends AppCompatActivity {
     private void apiCall(final JSONObject jsonObject) {
 
 
-        final String url = "http://192.168.1.21:3055/api/v2/initiateOrder";
+        final String url = Constants.BASE_URL+"api/v2/initiateOrder";
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override

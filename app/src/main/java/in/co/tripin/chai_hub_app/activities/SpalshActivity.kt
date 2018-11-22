@@ -2,12 +2,16 @@ package `in`.co.tripin.chai_hub_app.activities
 
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.R
+import android.Manifest.permission.CALL_PHONE
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.widget.TextView
+import android.widget.Toast
 
 class SpalshActivity : AppCompatActivity() {
 
@@ -51,7 +55,11 @@ class SpalshActivity : AppCompatActivity() {
         calltoreg.setOnClickListener {
             //call to admin
             val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "8394876737"))
-            startActivity(intent)
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                startActivity(intent)
+            } else {
+                Toast.makeText(applicationContext,"No Permission",Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

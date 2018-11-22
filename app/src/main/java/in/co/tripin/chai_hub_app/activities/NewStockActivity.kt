@@ -1,6 +1,7 @@
 package `in`.co.tripin.chai_hub_app.activities
 
 
+import `in`.co.tripin.chai_hub_app.Helper.Constants
 import `in`.co.tripin.chai_hub_app.Managers.Logger
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.POJOs.Models.Item
@@ -313,7 +314,7 @@ class NewStockActivity : AppCompatActivity() {
 
         Logger.v("getting menu...")
         dialog!!.show()
-        val url = "http://192.168.1.21:3055/api/v1/vendor/items"
+        val url = Constants.BASE_URL+"api/v1/vendor/items"
 
         val getRequest = object : JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener { response ->

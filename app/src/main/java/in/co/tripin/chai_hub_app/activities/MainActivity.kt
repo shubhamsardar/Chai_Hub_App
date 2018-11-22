@@ -1,10 +1,12 @@
 package `in`.co.tripin.chai_hub_app.activities
 
+import `in`.co.tripin.chai_hub_app.Helper.Constants
 import `in`.co.tripin.chai_hub_app.Managers.Logger
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.POJOs.Responces.PendingOrdersResponce
 import `in`.co.tripin.chai_hub_app.R
 import `in`.co.tripin.chai_hub_app.R.id.drawer_layout
+import `in`.co.tripin.chai_hub_app.R.id.pendinglist
 import `in`.co.tripin.chai_hub_app.adapters.PendingOrdersInteractionCallback
 
 import `in`.co.tripin.chai_hub_app.adapters.PendingAdapter
@@ -12,6 +14,8 @@ import `in`.co.tripin.chai_hub_app.networking.APIService
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,7 +30,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -39,6 +45,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import org.json.JSONObject
 import java.util.HashMap
 
@@ -48,12 +55,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var switch: Switch
     private var dialog: AlertDialog? = null
+    lateinit var mContext :Context
 
     lateinit var apiService: APIService
     private var mCompositeDisposable: CompositeDisposable? = null
     lateinit var preferenceManager: PreferenceManager
     private var queue: RequestQueue? = null
     lateinit var linearLayoutManager :LinearLayoutManager
+    lateinit var hubname : TextView
 
 
 
@@ -62,6 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        mContext = this
         mCompositeDisposable = CompositeDisposable()
         apiService = APIService.create()
         preferenceManager = PreferenceManager.getInstance(this)
@@ -85,6 +95,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             fetchPendingOrders()
         }
 
+
+        if(preferenceManager.userName!=null){
+            hubname = nav_view.getHeaderView(0).findViewById(R.id.hubname)
+            hubname.text = preferenceManager.userName.toUpperCase()
+        }
+
+
     }
 
     override fun onStart() {
@@ -106,25 +123,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            finish()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        return when (item.itemId) {
+//            R.id.action_settings -> true
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -159,6 +176,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SpalshActivity::class.java)
                 startActivity(intent)
                 finish()
+            }
+
+            R.id.nav_rate -> {
+               rateApp()
             }
         }
 
@@ -221,7 +242,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Logger.v("Marking Order Recived")
         dialog!!.show()
-        val url = "http://192.168.1.21:3055/api/v2/order/$mOrderId/status/$mOperation"
+        val url = Constants.BASE_URL+"api/v2/order/$mOrderId/status/$mOperation"
         val getRequest = object : JsonObjectRequest(Request.Method.GET, url, null,
                 com.android.volley.Response.Listener<JSONObject> { response ->
                     // display response
@@ -288,5 +309,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val callIntent = Intent(Intent.ACTION_CALL)
         callIntent.data = Uri.parse("tel:$mMobile")
         startActivity(callIntent)
+    }
+
+    internal fun rateApp() {
+        val uri = Uri.parse("market://details?id=" + mContext.getPackageName())
+        val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+        try {
+            startActivity(goToMarket)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + mContext.getPackageName())))
+        }
+
     }
 }

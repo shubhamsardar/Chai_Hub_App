@@ -1,6 +1,7 @@
 package `in`.co.tripin.chai_hub_app.activities
 
 
+import `in`.co.tripin.chai_hub_app.Helper.Constants
 import `in`.co.tripin.chai_hub_app.Managers.Logger
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.POJOs.Responces.OrderHistoryResponce
@@ -71,7 +72,7 @@ class OrderHistoryActivity : AppCompatActivity() {
 
         Logger.v("fetch List of Order History..")
         dialog!!.show()
-        val url = "http://192.168.1.21:3055/api/v2/hub/orders"
+        val url = Constants.BASE_URL+"api/v2/hub/orders"
         val getRequest = object : JsonObjectRequest(Request.Method.GET, url, null,
                 Response.Listener<JSONObject> { response ->
                     // display response
@@ -141,7 +142,7 @@ class OrderHistoryActivity : AppCompatActivity() {
 
         Logger.v("Toggle $tapriId : $operation")
         dialog!!.show()
-        val url = "http://192.168.1.21:3055/api/v1/tapri/items/$tapriId/$operation"
+        val url = Constants.BASE_URL+"api/v1/tapri/items/$tapriId/$operation"
 
         val getRequest = object : JsonObjectRequest(Request.Method.PATCH, url, null,
                 Response.Listener { response ->

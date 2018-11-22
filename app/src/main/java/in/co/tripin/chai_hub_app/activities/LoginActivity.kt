@@ -11,12 +11,14 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import `in`.co.tripin.chai_hub_app.networking.APIService
+import android.app.AlertDialog
 import com.basgeekball.awesomevalidation.AwesomeValidation
 import com.basgeekball.awesomevalidation.ValidationStyle
 import com.basgeekball.awesomevalidation.utility.RegexTemplate
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import dmax.dialog.SpotsDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -29,6 +31,8 @@ class LoginActivity : AppCompatActivity() {
     lateinit var login: TextView
     lateinit var mobile: EditText
     lateinit var pin: EditText
+    private var dialog: AlertDialog? = null
+
 
     lateinit var awesomeValidation: AwesomeValidation
     lateinit var logInBody: LogInBody
@@ -42,6 +46,13 @@ class LoginActivity : AppCompatActivity() {
         mCompositeDisposable = CompositeDisposable()
         apiSetvice = APIService.create()
         preferenceManager = PreferenceManager.getInstance(this)
+
+
+        dialog = SpotsDialog.Builder()
+                .setContext(this)
+                .setCancelable(false)
+                .setMessage("Loading")
+                .build()
 
 
         title = "Log In"
@@ -74,7 +85,9 @@ class LoginActivity : AppCompatActivity() {
                 logInBody = LogInBody()
                 logInBody.mobile = mobile.text.toString().trim()
                 logInBody.pin = pin.text.toString().trim()
+                logInBody.regToken = preferenceManager.fcmId
                 Log.v("OnLogin: ",logInBody.toString())
+                dialog!!.show()
                 mCompositeDisposable?.add( apiSetvice.logInUser(logInBody)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
@@ -100,10 +113,12 @@ class LoginActivity : AppCompatActivity() {
     private fun handleResponse(responce: Response<LogInResponce>) {
 
         Log.v("OnResponceLogin",responce.toString())
+        dialog!!.dismiss()
+
 
         val loginResponce : LogInResponce? = responce.body()
         if (loginResponce != null) {
-            Logger.v("Login : ${loginResponce.data.roles}")
+            Logger.v("Loginn : ${loginResponce.data.roles}")
             if(loginResponce.data.status == "Logged In"){
 
                 //save data to shared preferences
@@ -120,6 +135,7 @@ class LoginActivity : AppCompatActivity() {
                     preferenceManager.accessToken = responce.headers().get("token")
                     Log.v("token: ",preferenceManager.accessToken)
                     preferenceManager.mobileNo = loginResponce.data.mobile
+                    preferenceManager.userName = loginResponce.data.name
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -138,6 +154,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleError(error: Throwable) {
         Log.v("OnErrorLogin",error.toString())
+        dialog!!.dismiss()
         Toast.makeText(applicationContext,"Server Error!",Toast.LENGTH_LONG).show()
 
     }
