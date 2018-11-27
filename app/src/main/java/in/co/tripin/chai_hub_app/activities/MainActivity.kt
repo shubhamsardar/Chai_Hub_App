@@ -1,6 +1,7 @@
 package `in`.co.tripin.chai_hub_app.activities
 
 import `in`.co.tripin.chai_hub_app.Helper.Constants
+import `in`.co.tripin.chai_hub_app.Helper.SingleShotLocationProvider
 import `in`.co.tripin.chai_hub_app.Managers.Logger
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.POJOs.Responces.PendingOrdersResponce
@@ -52,19 +53,16 @@ import java.util.HashMap
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, PendingOrdersInteractionCallback {
 
 
-
     lateinit var switch: Switch
     private var dialog: AlertDialog? = null
-    lateinit var mContext :Context
+    lateinit var mContext: Context
 
     lateinit var apiService: APIService
     private var mCompositeDisposable: CompositeDisposable? = null
     lateinit var preferenceManager: PreferenceManager
     private var queue: RequestQueue? = null
-    lateinit var linearLayoutManager :LinearLayoutManager
-    lateinit var hubname : TextView
-
-
+    lateinit var linearLayoutManager: LinearLayoutManager
+    lateinit var hubname: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
 
-        if(preferenceManager.userName!=null){
+        if (preferenceManager.userName != null) {
             hubname = nav_view.getHeaderView(0).findViewById(R.id.hubname)
             hubname.text = preferenceManager.userName.toUpperCase()
         }
@@ -179,7 +177,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_rate -> {
-               rateApp()
+                rateApp()
             }
         }
 
@@ -189,17 +187,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun handleResponse(responce: PendingOrdersResponce) {
 
-        Log.v("OnResponcePending: ",responce.status)
-        pendinglist.adapter = PendingAdapter(responce.data,this,  this)
-        val size:Int = responce.data.size
-        when(size){
-            0 ->{
+        Log.v("OnResponcePending: ", responce.status)
+        pendinglist.adapter = PendingAdapter(responce.data, this, this)
+        val size: Int = responce.data.size
+        when (size) {
+            0 -> {
                 title = "No Orders for you"
             }
-            1 ->{
+            1 -> {
                 title = "$size Order Pending"
             }
-            else ->{
+            else -> {
                 title = "$size Orders Pending"
             }
         }
@@ -207,7 +205,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun handleError(error: Throwable) {
-        Log.v("OnErrorPending",error.toString())
+        Log.v("OnErrorPending", error.toString())
     }
 
 
@@ -217,38 +215,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOrderAccepted(mOrderId: String?) {
-        callEditOrderAPI(mOrderId,"accepted")
+        callEditOrderAPI(mOrderId, "accepted")
 
     }
 
     override fun onOrderRejected(mOrderId: String?) {
-        callEditOrderAPI(mOrderId,"rejected")
+        callEditOrderAPI(mOrderId, "rejected")
     }
 
     override fun onOrderSent(mOrderId: String?) {
-        callEditOrderAPI(mOrderId,"sent")
+        callEditOrderAPI(mOrderId, "sent")
     }
 
     @SuppressLint("MissingPermission")
     override fun onCalledCustomer(mMobile: String?) {
         //call to admin
         //call to admin
-        if(isPermissionGranted()){
+        if (isPermissionGranted()) {
             call_action(mMobile)
         }
     }
 
-    private fun callEditOrderAPI(mOrderId: String?, mOperation :String) {
+    private fun callEditOrderAPI(mOrderId: String?, mOperation: String) {
 
         Logger.v("Marking Order Recived")
         dialog!!.show()
-        val url = Constants.BASE_URL+"api/v2/order/$mOrderId/status/$mOperation"
+        val url = Constants.BASE_URL + "api/v2/order/$mOrderId/status/$mOperation"
         val getRequest = object : JsonObjectRequest(Request.Method.GET, url, null,
                 com.android.volley.Response.Listener<JSONObject> { response ->
                     // display response
                     dialog!!.dismiss()
                     Logger.v("ResponseEdit :" + response.toString())
-                    Toast.makeText(this,mOperation, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, mOperation, Toast.LENGTH_LONG).show()
                     fetchPendingOrders()
 
                 },
@@ -326,5 +324,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Uri.parse("http://play.google.com/store/apps/details?id=" + mContext.getPackageName())))
         }
 
+    }
+
+    fun foo(context: Context) {
+        // when you need location
+        // if inside activity context = this;
+
+        SingleShotLocationProvider.requestSingleUpdate(context
+        ) { location ->
+            Log.d("Location", "my location is " + location.toString())
+
+        }
     }
 }
