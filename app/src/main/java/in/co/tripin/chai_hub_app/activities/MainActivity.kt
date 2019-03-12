@@ -17,6 +17,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -28,10 +29,13 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.text.InputFilter
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -224,7 +228,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOrderSent(mOrderId: String?) {
-        callEditOrderAPI(mOrderId, "sent")
+
+        val v = LayoutInflater.from(this).inflate(R.layout.alert_dialog_edit_text, null)
+        val etBatchNumber = v.findViewById<EditText>(R.id.etBatchNumber)
+        etBatchNumber.setFilters(arrayOf(InputFilter.AllCaps()))
+
+
+        var alertDialog = AlertDialog.Builder(this)
+                .setTitle("Enter Batch Number")
+                .setCancelable(false)
+                .setView(v)
+                .setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, x ->
+
+                    val batchNumber = etBatchNumber.text.toString()
+
+                    if (batchNumber.equals("")) {
+                        AlertDialog.Builder(this)
+                                .setTitle("Oops")
+                                .setMessage("Batch number is required")
+                                .setPositiveButton("Ok", null)
+                                .create()
+                                .show()
+                    } else {
+                        //        callEditOrderAPI(mOrderId, "sent")
+                    }
+
+                })
+                .create()
+
+        alertDialog.show()
+
     }
 
     @SuppressLint("MissingPermission")

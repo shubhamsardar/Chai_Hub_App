@@ -26,4 +26,5 @@
     <string name="invalid_mobile">Mobile Must be 10 digits</string>
     <string name="error_invalid_otp">OTP Invalid</string>
     <string name="err_password_confirmation">PIN not matching</string>
+    <string name="batch_number">Batch Number</string>
 </resources>
