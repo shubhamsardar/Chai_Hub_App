@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:fontFamily="@font/source_sans_pro_semibold"
-                    android:text="Contact Chai-Hi-Yeh Admin"
+                    android:text="Contact Waah Chai Admin"
                     android:textSize="12sp" />
 
                 <TextView
