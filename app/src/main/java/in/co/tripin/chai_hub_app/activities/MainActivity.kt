@@ -172,6 +172,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, ChangePinActivity::class.java)
                 startActivity(intent)
             }
+            R.id.nav_batch -> {
+                val intent = Intent(this, BatchesListActivity::class.java)
+                startActivity(intent)
+            }
 
             R.id.nav_logout -> {
                 preferenceManager.clearLoginPreferences()

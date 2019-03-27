@@ -27,6 +27,10 @@
                 android:id="@+id/nav_stockhistory"
                 android:icon="@drawable/ic_history_black_24dp"
                 android:title="Stock History" />
+            <item
+                android:id="@+id/nav_batch"
+                android:icon="@drawable/ic_action_batches"
+                android:title="Batches" />
         </menu>
     </item>
 

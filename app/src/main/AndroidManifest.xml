@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.co.tripin.chai_hub_app">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <application
         android:allowBackup="true"
@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.AddBatchActivity"></activity>
+        <activity android:name=".activities.BatchesListActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -38,7 +40,7 @@
             android:parentActivityName=".activities.SpalshActivity" />
         <activity
             android:name=".activities.ForgotPinActivity"
-            android:parentActivityName=".activities.LoginActivity"></activity>
+            android:parentActivityName=".activities.LoginActivity" />
         <activity android:name=".activities.ResetPinActivity" />
         <activity
             android:name=".activities.MainActivity"
@@ -46,9 +48,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.OrderHistoryActivity"
-            android:parentActivityName=".activities.MainActivity">
-
-        </activity>
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.NewStockActivity"
             android:parentActivityName=".activities.MainActivity" />
@@ -65,7 +65,6 @@
         <activity
             android:name=".activities.ChangePinActivity"
             android:parentActivityName=".activities.MainActivity" />
-
     </application>
 
 </manifest>
