@@ -41,21 +41,24 @@ public class BatchesListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_batches_list);
-        batchListView = (ListView)findViewById(R.id.batchListView);
-        preferenceManager =PreferenceManager.getInstance(BatchesListActivity.this);
+        batchListView = (ListView) findViewById(R.id.batchListView);
+        preferenceManager = PreferenceManager.getInstance(BatchesListActivity.this);
         batchResponcesList = new ArrayList<>();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        addBatchButton = (FloatingActionButton)findViewById(R.id.addBatchButton);
+        addBatchButton = (FloatingActionButton) findViewById(R.id.addBatchButton);
         addBatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(BatchesListActivity.this,AddBatchActivity.class),0);
+                startActivityForResult(new Intent(BatchesListActivity.this, AddBatchActivity.class), 0);
             }
         });
         setTitle("Batches");
         getBatchesFromApi();
+
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -68,20 +71,22 @@ public class BatchesListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_order_history,menu);
+        getMenuInflater().inflate(R.menu.menu_order_history, menu);
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        this.getBatchesFromApi();
     }
 
-    public  void getBatchesFromApi()
-    {
+    public void getBatchesFromApi() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -92,20 +97,17 @@ public class BatchesListActivity extends AppCompatActivity {
         call.enqueue(new Callback<BatchResponce>() {
             @Override
             public void onResponse(Call<BatchResponce> call, Response<BatchResponce> response) {
-                if(response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
+
                     BatchResponce batchResponce = response.body();
 
-                    batchResponcesList= (ArrayList<BatchResponce.Data>) batchResponce.getData();
+                    batchResponcesList = (ArrayList<BatchResponce.Data>) batchResponce.getData();
 
-                    CustomAdapter customAdapter = new CustomAdapter(BatchesListActivity.this,android.R.layout.simple_list_item_1,batchResponcesList);
+                    CustomAdapter customAdapter = new CustomAdapter(BatchesListActivity.this, android.R.layout.simple_list_item_1, batchResponcesList);
                     batchListView.setAdapter(customAdapter);
 
-                }
-                else
-                {
+                } else {
                     Log.d("onResponse: ", String.valueOf(response.errorBody()));
-
                 }
             }
 
@@ -116,31 +118,30 @@ public class BatchesListActivity extends AppCompatActivity {
         });
     }
 
-    public class CustomAdapter extends ArrayAdapter<BatchResponce.Data>
-    {
+    public class CustomAdapter extends ArrayAdapter<BatchResponce.Data> {
 
         ArrayList<BatchResponce.Data> batchResponcesList;
         Context context;
         View view;
+
         public CustomAdapter(Context context, int resource, ArrayList<BatchResponce.Data> batchResponceList) {
             super(context, resource, batchResponceList);
             this.context = context;
-             this.batchResponcesList = batchResponceList ;
+            this.batchResponcesList = batchResponceList;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            view = getLayoutInflater().inflate(R.layout.custom_batch,null);
+            view = getLayoutInflater().inflate(R.layout.custom_batch, null);
 
-            TextView tvBatchName = (TextView)view.findViewById(R.id.tvBatchName);
-            TextView tvBatchSize = (TextView)view.findViewById(R.id.tvBatchSize);
+            TextView tvBatchName = (TextView) view.findViewById(R.id.tvBatchName);
+            TextView tvBatchSize = (TextView) view.findViewById(R.id.tvBatchSize);
 
-                tvBatchName.setText(batchResponcesList.get(position).getName());
-                tvBatchSize.setText(batchResponcesList.get(position).getSize());
+            tvBatchName.setText(batchResponcesList.get(position).getName());
+            tvBatchSize.setText(batchResponcesList.get(position).getSize());
 
-
-            return  view;
+            return view;
         }
     }
 }
