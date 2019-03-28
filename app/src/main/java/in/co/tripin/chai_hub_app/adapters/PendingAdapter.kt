@@ -52,7 +52,15 @@ class PendingAdapter(val data: List<PendingOrdersResponce.Datum>,
         }
         holder.b2.setOnClickListener{
             if(status == "accepted"){
-                pendingOrdersInteractionCallback.onOrderSent(data[position].id)
+
+                var quantity = 0
+                data[position].details.forEach { detail ->
+                    if (detail.itemName.equals("Waah Chai")) {
+                        quantity = detail.quantity
+                    }
+                }
+
+                pendingOrdersInteractionCallback.onOrderSent(data[position].id, quantity)
             }else if(status == "ordered"){
                 pendingOrdersInteractionCallback.onOrderAccepted(data[position].id)
 //                holder.b2.background = ContextCompat.getDrawable(context,R.drawable.button_light_selector)

@@ -11,10 +11,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import in.co.tripin.chai_hub_app.Helper.Constants;
 import in.co.tripin.chai_hub_app.Managers.PreferenceManager;
@@ -29,11 +35,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BatchesListActivity extends AppCompatActivity {
 
-    FloatingActionButton addBatchButton;
+
+    public static final String KEY_QUANTITY = "quantity";
+    public static final String KEY_ORDER_ID = "order_id";
+
+    FloatingActionButton addBatchButton, selectBatchesButton;
     private ListView batchListView;
     private PreferenceManager preferenceManager;
     ArrayList<BatchResponce.Data> batchResponcesList;
-
+    private String orderId;
+    private int orderQuantity;
+    private int totalAvailableSize = 0;
+    private HashMap<String, BatchResponce.Data> batchesMapper = new HashMap<>();
+    private CustomAdapter customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +59,38 @@ public class BatchesListActivity extends AppCompatActivity {
         batchResponcesList = new ArrayList<>();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addBatchButton = (FloatingActionButton) findViewById(R.id.addBatchButton);
+        selectBatchesButton = (FloatingActionButton) findViewById(R.id.selectBatchesButton);
         addBatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(BatchesListActivity.this, AddBatchActivity.class), 0);
             }
         });
+        selectBatchesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent();
+                i.putCharSequenceArrayListExtra(MainActivity.KEY_BATCH_IDS, new ArrayList<CharSequence>(batchesMapper.keySet()));
+                i.putExtra(KEY_ORDER_ID, orderId);
+                setResult(200, i);
+                finish();
+
+            }
+        });
         setTitle("Batches");
-        getBatchesFromApi();
+
+        orderId = getIntent().getStringExtra(KEY_ORDER_ID);
+        orderQuantity = getIntent().getIntExtra(KEY_QUANTITY, 0);
+
+        if (orderId == null) {
+            getBatchesFromApi(false);
+        } else {
+            getBatchesFromApi(true);
+            addBatchButton.setVisibility(View.GONE);
+        }
+
+        selectBatchesButton.setVisibility(View.GONE);
 
     }
 
@@ -79,10 +117,14 @@ public class BatchesListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.getBatchesFromApi();
+        if (orderId == null) {
+            getBatchesFromApi(false);
+        } else {
+            getBatchesFromApi(true);
+        }
     }
 
-    public void getBatchesFromApi() {
+    public void getBatchesFromApi(boolean shouldShowNonEmptyBatchesOnly) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -90,17 +132,27 @@ public class BatchesListActivity extends AppCompatActivity {
                 .build();
 
         BatchService batchService = retrofit.create(BatchService.class);
-        Call<BatchResponce> call = batchService.getBatches(preferenceManager.getAccessToken());
+
+        Call<BatchResponce> call = null;
+        if (shouldShowNonEmptyBatchesOnly) {
+            call = batchService.getNonEmptyBatches(preferenceManager.getAccessToken());
+        } else {
+            call = batchService.getBatches(preferenceManager.getAccessToken());
+        }
+
         call.enqueue(new Callback<BatchResponce>() {
             @Override
             public void onResponse(Call<BatchResponce> call, Response<BatchResponce> response) {
+
+                Log.d("TAG", response.body().toString());
+
                 if (response.isSuccessful()) {
 
                     BatchResponce batchResponce = response.body();
 
                     batchResponcesList = (ArrayList<BatchResponce.Data>) batchResponce.getData();
 
-                    CustomAdapter customAdapter = new CustomAdapter(BatchesListActivity.this, android.R.layout.simple_list_item_1, batchResponcesList);
+                    customAdapter = new CustomAdapter(BatchesListActivity.this, android.R.layout.simple_list_item_1, batchResponcesList);
                     batchListView.setAdapter(customAdapter);
 
                 } else {
@@ -110,7 +162,7 @@ public class BatchesListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BatchResponce> call, Throwable t) {
-
+                Log.d("TAG", String.valueOf(t.getMessage()));
             }
         });
     }
@@ -128,17 +180,67 @@ public class BatchesListActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
             view = getLayoutInflater().inflate(R.layout.custom_batch, null);
 
             TextView tvBatchName = (TextView) view.findViewById(R.id.tvBatchName);
             TextView tvBatchSize = (TextView) view.findViewById(R.id.tvBatchSize);
+            CheckBox checkbox = view.findViewById(R.id.checkbox);
 
-            tvBatchName.setText(batchResponcesList.get(position).getName());
-            tvBatchSize.setText(batchResponcesList.get(position).getTotalSize());
+            final BatchResponce.Data data = batchResponcesList.get(position);
+
+            if (orderId == null) {
+                checkbox.setVisibility(View.GONE);
+            } else if (orderId != null && totalAvailableSize >= orderQuantity && !batchesMapper.containsKey(data.get_id())) {
+
+                checkbox.setVisibility(View.INVISIBLE);
+
+            } else {
+                checkbox.setChecked(batchesMapper.containsKey(data.get_id()));
+            }
+
+            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked)
+                        batchesMapper.put(data.get_id(), data);
+                    else
+                        batchesMapper.remove(data.get_id());
+
+                    checkIfDemandIsMet();
+
+                }
+            });
+
+            tvBatchName.setText(data.getName());
+            tvBatchSize.setText("" + (data.getTotalSize() - data.getRequestedSize()));
 
             return view;
         }
     }
+
+    private void checkIfDemandIsMet() {
+
+        Iterator<String> iterator = batchesMapper.keySet().iterator();
+
+        totalAvailableSize = 0;
+        while (iterator.hasNext()) {
+
+            String batchId = iterator.next();
+            BatchResponce.Data batch = batchesMapper.get(batchId);
+
+            int availableSize = batch.getTotalSize() - batch.getRequestedSize();
+            totalAvailableSize = totalAvailableSize + availableSize;
+
+        }
+
+        customAdapter.notifyDataSetChanged();
+        if(totalAvailableSize >= orderQuantity) {
+            selectBatchesButton.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
 }

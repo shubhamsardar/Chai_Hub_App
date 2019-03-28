@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:layout_gravity="center_horizontal|center_vertical">
+    android:padding="10dp">
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:id="@+id/tvBatchName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Batch name"
-        android:textSize="25sp"
-        android:textColor="@color/black"
         android:layout_gravity="left"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:text="Batch name"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
     <TextView
         android:id="@+id/tvBatchSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:text="Batch Size"
-        android:textSize="25sp"
         android:textColor="@color/black"
-        android:layout_gravity="right"/>
+        android:textSize="25sp" />
 
 </LinearLayout>

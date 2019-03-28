@@ -6,8 +6,6 @@ import `in`.co.tripin.chai_hub_app.Managers.Logger
 import `in`.co.tripin.chai_hub_app.Managers.PreferenceManager
 import `in`.co.tripin.chai_hub_app.POJOs.Responces.PendingOrdersResponce
 import `in`.co.tripin.chai_hub_app.R
-import `in`.co.tripin.chai_hub_app.R.id.drawer_layout
-import `in`.co.tripin.chai_hub_app.R.id.pendinglist
 import `in`.co.tripin.chai_hub_app.adapters.PendingOrdersInteractionCallback
 
 import `in`.co.tripin.chai_hub_app.adapters.PendingAdapter
@@ -17,7 +15,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -29,13 +26,9 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.text.InputFilter
+import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -50,7 +43,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import org.json.JSONObject
 import java.util.HashMap
 
@@ -67,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var queue: RequestQueue? = null
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var hubname: TextView
-
+    private val REQUEST_CODE_GET_BATCHES: Int = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -231,37 +223,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         callEditOrderAPI(mOrderId, "rejected")
     }
 
-    override fun onOrderSent(mOrderId: String?) {
 
-        val v = LayoutInflater.from(this).inflate(R.layout.alert_dialog_edit_text, null)
-        val etBatchNumber = v.findViewById<EditText>(R.id.etBatchNumber)
-        etBatchNumber.setFilters(arrayOf(InputFilter.AllCaps()))
+    override fun onOrderSent(mOrderId: String?, quantity: Int) {
 
+        var i = Intent(this, BatchesListActivity::class.java)
+        i.putExtra(BatchesListActivity.KEY_ORDER_ID, mOrderId);
+        i.putExtra(BatchesListActivity.KEY_QUANTITY, quantity);
+        startActivityForResult(i, REQUEST_CODE_GET_BATCHES)
+//        callEditOrderAPI(mOrderId, "sent")
 
-        var alertDialog = AlertDialog.Builder(this)
-                .setTitle("Enter Batch Number")
-                .setCancelable(false)
-                .setView(v)
-                .setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, x ->
+    }
 
-                    val batchNumber = etBatchNumber.text.toString()
-
-                    if (batchNumber.equals("")) {
-                        AlertDialog.Builder(this)
-                                .setTitle("Oops")
-                                .setMessage("Batch number is required")
-                                .setPositiveButton("Ok", null)
-                                .create()
-                                .show()
-                    } else {
-                        //        callEditOrderAPI(mOrderId, "sent")
-                    }
-
-                })
-                .create()
-
-        alertDialog.show()
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_GET_BATCHES) {
+            var orderId = data?.getStringExtra(BatchesListActivity.KEY_ORDER_ID)
+            var batchIds = data?.getStringArrayListExtra(KEY_BATCH_IDS);
+            callEditOrderAPI(orderId, "sent", batchIds)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -273,11 +252,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun callEditOrderAPI(mOrderId: String?, mOperation: String) {
+    private fun callEditOrderAPI(mOrderId: String?, mOperation: String, batchIds: ArrayList<String>? = null) {
 
         Logger.v("Marking Order Recived")
         dialog!!.show()
-        val url = Constants.BASE_URL + "api/v2/order/$mOrderId/status/$mOperation"
+
+
+        var url = Constants.BASE_URL + "api/v2/order/$mOrderId/status/$mOperation"
+
+        if(mOperation == "sent" && batchIds != null) {
+
+            var batchIdsString = TextUtils.join(",", batchIds)
+            url = url + "?batchIds=" + batchIdsString
+
+        }
+
         val getRequest = object : JsonObjectRequest(Request.Method.GET, url, null,
                 com.android.volley.Response.Listener<JSONObject> { response ->
                     // display response
@@ -373,4 +362,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
     }
+
+    companion object {
+        @JvmField
+        var KEY_BATCH_IDS: String = "batchIds"
+    }
+
 }

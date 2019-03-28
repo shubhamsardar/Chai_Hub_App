@@ -4,7 +4,7 @@ public interface PendingOrdersInteractionCallback {
 
     void onOrderAccepted(String mOrderId);
     void onOrderRejected(String mOrderId);
-    void onOrderSent(String mOrderId);
+    void onOrderSent(String mOrderId, int orderSize);
     void onCalledCustomer(String mMobile);
 
 }
