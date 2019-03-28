@@ -28,9 +28,17 @@ public class AddBatchResponse {
 
     public class Batch {
 
-        private String _id, updatedAt, createdAt, name, size, date;
+        private String _id, updatedAt, createdAt, name, totalSize, requestedSize, date;
         private BatchResponce.HubId hubId;
         private String __v, flag;
+
+        public String getRequestedSize() {
+            return requestedSize;
+        }
+
+        public void setRequestedSize(String requestedSize) {
+            this.requestedSize = requestedSize;
+        }
 
         public String get_id() {
             return _id;
@@ -64,12 +72,12 @@ public class AddBatchResponse {
             this.name = name;
         }
 
-        public String getSize() {
-            return size;
+        public String getTotalSize() {
+            return totalSize;
         }
 
-        public void setSize(String size) {
-            this.size = size;
+        public void setTotalSize(String totalSize) {
+            this.totalSize = totalSize;
         }
 
         public String getDate() {

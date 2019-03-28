@@ -14,10 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import in.co.tripin.chai_hub_app.Helper.Constants;
 import in.co.tripin.chai_hub_app.Managers.PreferenceManager;
@@ -139,7 +136,7 @@ public class BatchesListActivity extends AppCompatActivity {
             TextView tvBatchSize = (TextView) view.findViewById(R.id.tvBatchSize);
 
             tvBatchName.setText(batchResponcesList.get(position).getName());
-            tvBatchSize.setText(batchResponcesList.get(position).getSize());
+            tvBatchSize.setText(batchResponcesList.get(position).getTotalSize());
 
             return view;
         }

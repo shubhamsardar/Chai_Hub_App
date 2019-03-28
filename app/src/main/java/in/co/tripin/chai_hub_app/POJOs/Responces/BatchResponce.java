@@ -25,9 +25,9 @@ public class BatchResponce {
 
     public class Data {
 
-        private String _id,updatedAt,createdAt,name,size,date;
+        private String _id, updatedAt, createdAt, name, totalSize, date;
         private HubId hubId;
-        private String __v,flag;
+        private String __v, flag;
 
         public String get_id() {
             return _id;
@@ -61,12 +61,12 @@ public class BatchResponce {
             this.name = name;
         }
 
-        public String getSize() {
-            return size;
+        public String getTotalSize() {
+            return totalSize;
         }
 
-        public void setSize(String size) {
-            this.size = size;
+        public void setTotalSize(String totalSize) {
+            this.totalSize = totalSize;
         }
 
         public String getDate() {
@@ -101,9 +101,9 @@ public class BatchResponce {
             this.flag = flag;
         }
     }
-    public class HubId
-    {
-        private String _id,name;
+
+    public class HubId {
+        private String _id, name;
 
         public String get_id() {
             return _id;
