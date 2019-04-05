@@ -5,13 +5,19 @@ import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
 import org.acra.ACRA;
+import org.acra.BuildConfig;
+import org.acra.annotation.AcraCore;
 import org.acra.config.CoreConfigurationBuilder;
-import org.acra.config.MailSenderConfigurationBuilder;
+import org.acra.config.HttpSenderConfigurationBuilder;
 import org.acra.data.StringFormat;
+import org.acra.sender.HttpSender;
 
 import java.util.Calendar;
 
-public class MyApplication extends Application {
+import in.co.tripin.chai_hub_app.Helper.Constants;
+
+@AcraCore(buildConfigClass = org.acra.BuildConfig.class)
+public class MyApplication extends MultiDexApplication {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -19,12 +25,11 @@ public class MyApplication extends Application {
 
         CoreConfigurationBuilder builder = new CoreConfigurationBuilder(this);
         builder.setBuildConfigClass(BuildConfig.class).setReportFormat(StringFormat.JSON);
-        builder.getPluginConfigurationBuilder(MailSenderConfigurationBuilder.class)
-                .setEnabled(true)
-                .setReportFileName("CrashReport_" + Calendar.getInstance().getTime().toString() + ".json")
-                .setMailTo("clyde.mendonca@weaverbirds.in,siddharth@weaverbirds.in,amar@weaverbirds.in");
+        builder.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder.class)
+                .setUri(Constants.BASE_URL + "acra")
+                .setHttpMethod(HttpSender.Method.POST)
+                .setEnabled(true);
 
-        // The following line triggers the initialization of ACRA
         ACRA.init(this, builder);
 
     }
