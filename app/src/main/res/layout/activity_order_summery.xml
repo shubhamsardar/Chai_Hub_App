@@ -42,7 +42,7 @@
                 android:fontFamily="@font/source_sans_pro_extralight"
                 android:gravity="center_horizontal"
                 android:padding="16dp"
-                android:text="Tapri Name"
+                android:text="Chaiwala Name"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold"
